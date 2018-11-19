@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}发布博客 {% endblock %}
+
+{% block custom_css %}
+<style type="text/css">
+	.panel
+	{
+		padding: 80px 20px 0px;
+		min-height: 400px;
+		cursor: default;
+	}
+	.text-center
+	{
+		margin: 0 auto;
+		text-align: center;
+		border-radius: 10px;
+		max-width: 900px;
+		-moz-box-shadow: 0px 0px 5px rgba(0,0,0,.3);
+		-webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.3);
+		box-shadow: 0px 0px 5px rgba(0,0,0,.1);
+	}
+	.float-left
+	{
+		float: left !important;
+	}
+	.float-right
+	{
+		float: right !important;
+	}
+	img
+	{
+		border: 0;
+		vertical-align: bottom;
+	}
+	h2
+	{
+		padding-top: 20px;
+		font-size: 20px;
+	}
+	.padding-big
+	{
+		padding: 20px;
+	}
+	.alert
+	{
+		border-radius: 5px;
+		padding: 15px;
+		border: solid 1px #ddd;
+		background-color: #f5f5f5;
+	}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="container">
+<div class="panel">
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<p style="color:red">{{error_msg}}</p>
+		<form action="/pubok/" method="post" enctype="multipart/form-data">
+            <input type="hidden"  name="hidden" value="{{ user.username }}">
+	  <div class="form-group">
+	    <label for="exampleInputEmail1">文章标题</label>
+	    <input type="text" name='title' class="form-control" id="exampleInputEmail1" placeholder="请输入文章标题">
+	  </div>
+	  <div class="form-group">
+	    <label for="exampleInputPassword1">内容</label><br>
+          <textarea name='content' cols="50%" rows="10"></textarea>
+{#	    <input type="password" name='content' class="form-control" id="exampleInputPassword1" placeholder="请输入内容...">#}
+	  </div>
+        <div class="form-group">
+	    <label for="exampleInputPassword1">设置封面</label><br>
+          <input type="file"  name="pic"/><br>
+{#	    <input type="password" name='content' class="form-control" id="exampleInputPassword1" placeholder="请输入内容...">#}
+	  </div>
+
+      <div class="form-group">
+          <label for="exampleInputPassword1">博客分类</label><br>
+          {% for category in categorys %}
+          <input type="radio" name="blog" class="myblog" value="{{ category }}">{{ category }}
+          {% endfor %}
+          <br>
+          <input type="text" placeholder="没有满足的请添加其他" name="cother" id="cother" class="form-control"  >
+      </div>
+
+        <div class="form-group">
+          <label for="exampleInputPassword1">标签</label><br>
+          {% for tag in tags %}
+          <input type="checkbox" name="tag" class="mytag" value="{{ tag }}">{{ tag }}
+          {% endfor %}
+          <br>
+          <input type="text" placeholder="没有满足的请添加其他" name="tother" id="tother" class="form-control">
+      </div>
+	  <button type="submit" class="btn btn-default">确定发布</button>
+		{% csrf_token %}
+	</form>
+
+</div>
+
+</div>
+</div>
+</section>
+    <script>
+        $(".myblog").click(function () {
+            $('#cother').val('')
+            $('input[name=cother]').attr("readonly","readonly")
+
+            {#$('#cother').css('readonly')#}
+        })
+        $(".mytag").click(function () {
+            var num=0;
+             $("[name=tag]:checkbox").each(function () {
+                    if(this.checked==true){
+                        num++
+                        $('input[name=tother]').attr("readonly","readonly")
+                        $('#tother').val('')
+                    {#    添加只读属性#}
+                    }
+
+                });
+             if(num==0){
+                $('input[name=tother]').removeAttr("readonly")
+             }
+
+                {#$('#cother').css('readonly')#}
+            })
+
+
+    </script>
+
+{% endblock %}
